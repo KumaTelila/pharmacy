@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# Install system dependencies
+# Install system dependencies, including Node.js and npm
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libzip-dev \
@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     nginx \
+    curl \
+    && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
     && docker-php-ext-install pdo_pgsql zip gd \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -20,6 +23,9 @@ WORKDIR /var/www/html
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
+
+# Install Node.js dependencies and compile assets
+RUN npm install && npm run prod
 
 # Copy NGINX configuration
 COPY conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
