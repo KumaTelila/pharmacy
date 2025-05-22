@@ -23,7 +23,11 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Copy NGINX configuration
 COPY conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
-RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# Ensure NGINX sites-enabled directory exists and link configuration
+RUN mkdir -p /etc/nginx/sites-enabled && \
+    rm -f /etc/nginx/sites-enabled/default && \
+    ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
