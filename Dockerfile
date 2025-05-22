@@ -17,4 +17,7 @@ ENV LOG_CHANNEL stderr
 # Allow composer to run as root
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
+# Make artisan script executable
+RUN chmod +x /startup/*.sh
+
 CMD ["/start.sh"]
